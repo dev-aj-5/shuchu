@@ -1,9 +1,10 @@
 let isFocusActive = false;
 let focusTimeout = null;
+let focusEndTime = null;
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "getState") {
-    sendResponse({ isActive: isFocusActive });
+    sendResponse({ isActive: isFocusActive, endTime: focusEndTime });
   }
   
   if (message.action === "toggleFocus") {
@@ -11,6 +12,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     
     if (isFocusActive) {
       const ms = message.duration * 60 * 1000;
+      focusEndTime = Date.now() + ms;
+      
       focusTimeout = setTimeout(() => {
         endFocusMode();
       }, ms);
@@ -22,24 +25,23 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }
     
     broadcastState();
-    sendResponse({ isActive: isFocusActive });
+    sendResponse({ isActive: isFocusActive, endTime: focusEndTime });
   }
   return true; 
 });
 
 function endFocusMode() {
   isFocusActive = false;
+  focusEndTime = null;
   broadcastState();
 }
 
 function broadcastState() {
   chrome.tabs.query({}, (tabs) => {
     tabs.forEach(tab => {
-      // Ensure the tab has a valid ID and is a loaded YouTube page
       if (tab.id && tab.url && tab.url.includes("youtube.com")) {
         chrome.tabs.sendMessage(tab.id, { action: "updateVisibility", isActive: isFocusActive }, () => {
-          // Catch structural disconnects silently
-          if (chrome.runtime.lastError) { /* Context invalidated placeholder */ }
+          if (chrome.runtime.lastError) { /* Clean context catching */ }
         });
       }
     });
