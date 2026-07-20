@@ -51,14 +51,19 @@ function broadcastState() {
 function pauseOtherTabs() {
   chrome.tabs.query({ active: false }, (tabs) => {
     tabs.forEach(tab => {
+      // Avoid browser system strings entirely
       if (!tab.id || !tab.url || tab.url.startsWith("chrome://") || tab.url.startsWith("brave://")) return;
       
       chrome.scripting.executeScript({
-        target: { tabId: tab.id },
+        target: { tabId: tab.id, allFrames: true }, // Targets inner frames/players too
         func: () => {
-          document.querySelectorAll('video, audio').forEach(media => media.pause());
+          document.querySelectorAll('video, audio').forEach(media => {
+            if (!media.paused) {
+              media.pause();
+            }
+          });
         }
-      }).catch(() => {});
+      }).catch((err) => console.log("Tab injection skipped safely: ", err));
     });
   });
 }

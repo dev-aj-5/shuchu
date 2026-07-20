@@ -1,9 +1,16 @@
 {
   "manifest_version": 3,
-  "name": "Shūchū",
+  "name": "Shūchū Focus Flow",
   "version": "1.0",
   "description": "Minimalist focus mode for YouTube with a built-in timer.",
-  "permissions": ["activeTab", "scripting", "tabs"],
+  "permissions": [
+    "activeTab", 
+    "scripting", 
+    "tabs"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
   "background": {
     "service_worker": "background.js"
   },

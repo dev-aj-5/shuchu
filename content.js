@@ -6,11 +6,23 @@ function setFocusMode(isActive) {
       styleEl = document.createElement('style');
       styleEl.id = 'shuchu-focus-styles';
       styleEl.innerHTML = `
-        ytd-comments, #comments, #related, 
-        ytd-browse[page-subtype="home"], 
-        #primary #comments, #secondary,
+        /* 1. Hide the entire right-hand sidebar recommendation column */
+        #secondary,
+        ytd-browse[page-subtype="home"],
         ytd-watch-next-secondary-results-renderer,
-        #contents.ytd-rich-grid-renderer {
+        
+        /* 2. Hide comment sections across all video variations */
+        #comments,
+        ytd-item-section-renderer #comments,
+        ytd-comments,
+        
+        /* 3. Hide the home feed grid loops */
+        #contents.ytd-rich-grid-renderer,
+        ytd-rich-grid-renderer,
+        
+        /* 4. Hide end-screen video suggestions when a video finishes */
+        .html5-endscreen,
+        .ytp-endscreen-content {
           display: none !important;
           opacity: 0 !important;
           visibility: hidden !important;
@@ -24,7 +36,7 @@ function setFocusMode(isActive) {
   }
 }
 
-// Listen for messages from background
+// Listen for messages from background script
 chrome.runtime.onMessage.addListener((message) => {
   if (message.action === "updateVisibility") {
     setFocusMode(message.isActive);
