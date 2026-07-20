@@ -4,158 +4,200 @@
   <meta charset="utf-8">
   <style>
     :root {
-      --bg-gradient: linear-gradient(135deg, #f9f9fb 0%, #f1f1f4 100%);
-      --text-main: #191919;
-      --text-muted: #666666;
-      --border-color: #e2e2e7;
+      /* Refined rich dark background with ultra-subtle transparency */
+      --glass-bg: rgba(36, 36, 39, 0.94); 
+      --glass-border: rgba(255, 255, 255, 0.05);
+      --text-main: rgba(255, 255, 255, 0.95);
+      --text-muted: rgba(255, 255, 255, 0.45);
+      --accent-pill: rgba(255, 255, 255, 0.06);
+      --accent-pill-hover: rgba(255, 255, 255, 0.12);
     }
     
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      width: 250px;
-      padding: 20px;
+    html, body {
+      background: #1e1e20; /* Hard fallback so the browser doesn't render ugly white boxes */
       margin: 0;
-      background: var(--bg-gradient);
-      color: var(--text-main);
-      -webkit-font-smoothing: antialiased;
+      padding: 0;
+      width: 280px;
+      box-sizing: border-box;
+      overflow: hidden;
     }
 
+    /* The exact viewport layout frame */
+    .window-frame {
+      background: var(--glass-bg);
+      padding: 24px 20px;
+      box-sizing: border-box;
+      width: 100%;
+    }
+
+    /* Claude's Exact Serif Font Stack (Stuart/Georgia feel) */
     h3 {
-      font-family: Georgia, Cambria, "Times New Roman", Times, serif;
-      margin: 0 0 16px 0;
-      font-size: 20px;
-      font-weight: 500;
+      font-family: 'Times New Roman', Times, Georgia, Cambria, serif;
+      margin: 0 0 4px 0;
+      font-size: 24px;
+      font-weight: 400;
       text-align: center;
-      letter-spacing: -0.3px;
+      color: #ffffff;
+      letter-spacing: -0.5px;
     }
 
+    /* Claude's Exact UI Font Stack (System Inter/San-Francisco) */
     .subtitle {
-      font-size: 12px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 10px;
+      font-weight: 600;
       color: var(--text-muted);
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
     }
 
     .btn-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 8px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     button.preset-btn {
-      padding: 8px;
-      border: 1px solid var(--border-color);
-      background: #ffffff;
-      border-radius: 6px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      padding: 12px 8px;
+      border: 1px solid var(--glass-border);
+      background: var(--accent-pill);
+      border-radius: 8px;
       cursor: pointer;
       font-size: 13px;
       font-weight: 500;
       color: var(--text-main);
-      transition: all 0.2s ease;
+      transition: all 0.15s ease;
     }
 
     button.preset-btn:hover {
-      background: #f5f5f7;
-      border-color: #d1d1d6;
+      background: var(--accent-pill-hover);
+      border-color: rgba(255, 255, 255, 0.15);
     }
 
     button.preset-btn.selected {
-      background: #191919;
-      color: #ffffff;
-      border-color: #191919;
+      background: #ffffff;
+      color: #1c1c1e;
+      border-color: #ffffff;
+      font-weight: 600;
     }
 
     .custom-container {
-      margin-bottom: 20px;
+      margin-bottom: 24px;
     }
 
     input {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       width: 100%;
       box-sizing: border-box;
-      padding: 10px;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
+      padding: 12px;
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
       font-size: 13px;
-      background: #ffffff;
+      background: var(--accent-pill);
+      color: var(--text-main);
       outline: none;
-      transition: border-color 0.2s ease;
+      transition: all 0.15s ease;
+      text-align: center;
+    }
+
+    input::placeholder {
+      color: rgba(255, 255, 255, 0.25);
     }
 
     input:focus {
-      border-color: #191919;
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button {
+      filter: invert(1);
     }
 
     .status-container {
       text-align: center;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
       min-height: 24px;
     }
 
     .status {
-      font-size: 13px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 12px;
       color: var(--text-muted);
+      letter-spacing: -0.1px;
     }
 
     .countdown {
-      font-family: Georgia, serif;
-      font-size: 28px;
-      font-weight: bold;
-      color: #191919;
+      font-family: 'Times New Roman', Times, Georgia, serif;
+      font-size: 42px;
+      font-weight: 400;
+      color: #ffffff;
       margin-top: 4px;
       display: none;
+      letter-spacing: -0.5px;
     }
 
     .action-btn {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       width: 100%;
-      padding: 12px;
-      color: white;
+      padding: 14px;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       font-size: 14px;
-      font-weight: 600;
+      font-weight: 500;
       cursor: pointer;
-      transition: background 0.2s ease;
+      transition: all 0.15s ease;
+      letter-spacing: -0.2px;
+      box-sizing: border-box;
     }
 
     .start {
-      background: #191919;
+      background: #ffffff;
+      color: #19191b;
     }
 
     .start:hover {
-      background: #333333;
+      background: rgba(255, 255, 255, 0.9);
     }
 
     .stop {
-      background: #e03131;
+      background: rgba(239, 68, 68, 0.12);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.25);
     }
 
     .stop:hover {
-      background: #c92a2a;
+      background: rgba(239, 68, 68, 0.2);
     }
   </style>
 </head>
 <body>
-  <h3>Shūchū</h3>
-  <div class="subtitle">Focus Flow Dashboard</div>
-  
-  <div id="interactive-inputs">
-    <div class="btn-grid">
-      <button class="preset-btn" data-mins="5">5m</button>
-      <button class="preset-btn" data-mins="10">10m</button>
-      <button class="preset-btn" data-mins="15">15m</button>
+  <div class="window-frame">
+    <h3>Shūchū</h3>
+    <div class="subtitle">Focus Flow</div>
+    
+    <div id="interactive-inputs">
+      <div class="btn-grid">
+        <button class="preset-btn" data-mins="5">5m</button>
+        <button class="preset-btn" data-mins="10">10m</button>
+        <button class="preset-btn" data-mins="15">15m</button>
+      </div>
+      <div class="custom-container">
+        <input type="number" id="custom-time" placeholder="Custom duration (minutes)" min="1">
+      </div>
     </div>
-    <div class="custom-container">
-      <input type="number" id="custom-time" placeholder="Custom duration (minutes)" min="1">
+    
+    <div class="status-container">
+      <div class="status" id="status-text">Select focus depth</div>
+      <div class="countdown" id="countdown-display">00:00</div>
     </div>
+    
+    <button id="toggle-btn" class="action-btn start">Start Focus</button>
   </div>
-  
-  <div class="status-container">
-    <div class="status" id="status-text">Select focus depth</div>
-    <div class="countdown" id="countdown-display">00:00</div>
-  </div>
-  
-  <button id="toggle-btn" class="action-btn start">Start Focus</button>
 
   <script src="popup.js"></script>
 </body>
